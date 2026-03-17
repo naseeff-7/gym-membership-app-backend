@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:15
+    container_name: gym-postgres
+    environment:
+      POSTGRES_DB: gymdb
+      POSTGRES_USER: gymuser
+      POSTGRES_PASSWORD: gympass
+    ports:
+      - "5432:5432"
+    volumes:
+      - gym_postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: .
+    container_name: gym-backend-container
+    ports:
+      - "8081:8100"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/gymdb
+      SPRING_DATASOURCE_USERNAME: gymuser
+      SPRING_DATASOURCE_PASSWORD: gympass
+    depends_on:
+      - db
+
+volumes:
+  gym_postgres_data:
